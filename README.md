@@ -52,7 +52,7 @@ logistics-cost-intelligence/
 ## 🏃‍♂️ Quick Start
 1.Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/logistics-cost-intelligence.git
+   git clone https://github.com/mmesoma-eboh/logistics-cost-intelligence.git
 2. Install requirements: `pip install -r requirements.txt`
 3. Run the analysis notebooks in order (01-04)
 
