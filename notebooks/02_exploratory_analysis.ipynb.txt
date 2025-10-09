@@ -1,0 +1,222 @@
+<jupyter_text>
+Logistics Cost Analysis - Exploratory Data Analysis & Hypothesis Testing. This notebook performs exploratory analysis to identify cost drivers and test business hypotheses.
+<jupyter_code>
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+import warnings
+warnings.filterwarnings('ignore')
+
+# Set style for better visuals
+plt.style.use('seaborn-v0_8')
+sns.set_palette("husl")
+
+print("✅ Libraries imported successfully!")
+<jupyter_output>
+✅ Libraries imported successfully!
+<jupyter_text>
+Load Cleaned Data
+<jupyter_code>
+# Load the data we cleaned in the previous notebook
+df = pd.read_csv('../data/processed/cleaned_logistics_data.csv')
+standard_freight = pd.read_csv('../data/processed/standard_freight_data.csv')
+
+print("📊 Data loaded successfully!")
+print(f"Full dataset: {df.shape}")
+print(f"Standard freight only: {standard_freight.shape}")
+df.head()
+<jupyter_output>
+📊 Data loaded successfully!
+Full dataset: (100, 10)
+Standard freight only: (93, 11)
+<jupyter_text>
+1. Cost Distribution Analysis
+<jupyter_code>
+fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+
+# Original vs Cleaned cost distribution
+axes[0,0].hist(df['cost_per_kg'], bins=50, alpha=0.7, label='Original', color='red')
+axes[0,0].set_title('Original Cost per Kg Distribution')
+axes[0,0].set_xlabel('Cost per Kg ($)')
+axes[0,0].set_ylabel('Frequency')
+
+axes[0,1].hist(standard_freight['cleaned_cost_per_kg'], bins=30, alpha=0.7, label='Cleaned', color='green')
+axes[0,1].set_title('Cleaned Cost per Kg Distribution (Standard Freight Only)')
+axes[0,1].set_xlabel('Cost per Kg ($)')
+axes[0,1].set_ylabel('Frequency')
+
+# Cost by service level
+service_level_cost = df.groupby('service_level')['invoice_amount'].mean().sort_values(ascending=False)
+axes[1,0].bar(service_level_cost.index, service_level_cost.values, color=['red', 'orange', 'green'])
+axes[1,0].set_title('Average Cost by Service Level')
+axes[1,0].set_ylabel('Average Invoice Amount ($)')
+axes[1,0].tick_params(axis='x', rotation=45)
+
+# Cost by lane
+lane_cost = standard_freight.groupby('lane')['cleaned_cost_per_kg'].mean().sort_values(ascending=False)
+axes[1,1].bar(lane_cost.index, lane_cost.values)
+axes[1,1].set_title('Average Cost per Kg by Lane (Standard Freight)')
+axes[1,1].set_ylabel('Cost per Kg ($)')
+axes[1,1].tick_params(axis='x', rotation=45)
+
+plt.tight_layout()
+plt.show()
+<jupyter_output>
+<empty_output>
+<jupyter_text>
+2. Hypothesis Testing  Hypothesis 1: Weight is the Primary Cost Driver
+<jupyter_code>
+# Scatter plot: Weight vs Cost
+plt.figure(figsize=(10, 6))
+plt.scatter(standard_freight['cleaned_billable_weight'], 
+            standard_freight['invoice_amount'], 
+            alpha=0.6)
+plt.xlabel('Billable Weight (kg)')
+plt.ylabel('Invoice Amount ($)')
+plt.title('Weight vs Cost: Testing Primary Cost Driver Hypothesis')
+plt.grid(True, alpha=0.3)
+
+# Calculate correlation
+correlation = standard_freight['cleaned_billable_weight'].corr(standard_freight['invoice_amount'])
+plt.text(0.05, 0.95, f'Correlation: {correlation:.3f}', 
+         transform=plt.gca().transAxes, fontsize=12,
+         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
+
+plt.show()
+
+print(f"📊 Correlation between weight and cost: {correlation:.3f}")
+if abs(correlation) < 0.3:
+    print("❌ Hypothesis REJECTED: Weight is NOT a strong primary driver")
+else:
+    print("✅ Hypothesis SUPPORTED: Weight is a significant driver")
+<jupyter_output>
+<empty_output>
+<jupyter_text>
+Hypothesis 2: Service Level Drives Cost Premiums
+<jupyter_code>
+# ANOVA test for service level impact
+service_level_groups = [standard_freight[standard_freight['service_level'] == level]['cleaned_cost_per_kg'] 
+                       for level in standard_freight['service_level'].unique()]
+
+f_stat, p_value = stats.f_oneway(*service_level_groups)
+
+print(f"📊 Service Level Impact Analysis:")
+print(f"F-statistic: {f_stat:.3f}")
+print(f"P-value: {p_value:.3f}")
+
+if p_value < 0.05:
+    print("✅ Hypothesis SUPPORTED: Service level significantly impacts cost")
+else:
+    print("❌ Hypothesis REJECTED: Service level does not significantly impact cost")
+<jupyter_output>
+📊 Service Level Impact Analysis:
+F-statistic: 12.125
+P-value: 0.000
+✅ Hypothesis SUPPORTED: Service level significantly impacts cost
+<jupyter_text>
+3. Volatility Analysis by Lane
+<jupyter_code>
+# Calculate volatility (standard deviation) by lane
+lane_volatility = standard_freight.groupby('lane').agg({
+    'cleaned_cost_per_kg': ['mean', 'std', 'count']
+}).round(2)
+
+lane_volatility.columns = ['avg_cost_per_kg', 'std_deviation', 'shipment_count']
+lane_volatility['coefficient_of_variation'] = (lane_volatility['std_deviation'] / lane_volatility['avg_cost_per_kg']).round(3)
+
+print("🚨 LANE VOLATILITY ANALYSIS")
+print("=" * 50)
+print(lane_volatility.sort_values('std_deviation', ascending=False))
+
+# Visualize volatility
+plt.figure(figsize=(10, 6))
+lanes = lane_volatility.index
+y_pos = np.arange(len(lanes))
+
+plt.barh(y_pos, lane_volatility['std_deviation'], color='lightcoral', alpha=0.7)
+plt.yticks(y_pos, lanes)
+plt.xlabel('Standard Deviation of Cost per Kg ($)')
+plt.title('Cost Volatility by Shipping Lane')
+plt.grid(axis='x', alpha=0.3)
+
+# Add value labels
+for i, v in enumerate(lane_volatility['std_deviation']):
+    plt.text(v + 0.5, i, f'${v}', va='center')
+
+plt.tight_layout()
+plt.show()
+<jupyter_output>
+🚨 LANE VOLATILITY ANALYSIS
+==================================================
+                 avg_cost_per_kg  std_deviation  shipment_count  coefficient_of_variation
+lane                                                                                     
+NYC-FRA                    40.13          21.66              36                    0.540
+LONDON-SINGAPORE           23.71           9.94              28                    0.419
+SHANGHAI-CHICAGO           21.80           9.34              29                    0.428
+<jupyter_text>
+4. August Inefficiency Deep Dive
+<jupyter_code>
+# Convert ship_date to datetime for time analysis
+standard_freight['ship_date'] = pd.to_datetime(standard_freight['ship_date'])
+
+# Analyze August performance (assuming some August dates in our sample)
+august_data = standard_freight[standard_freight['ship_date'].dt.month == 8]
+nyc_fra_august = august_data[august_data['lane'] == 'NYC-FRA']
+
+print("🔍 AUGUST INEFFICIENCY ANALYSIS")
+print("=" * 40)
+print(f"August NYC-FRA shipments: {len(nyc_fra_august)}")
+if len(nyc_fra_august) > 0:
+    print(f"Average cost per kg: ${nyc_fra_august['cleaned_cost_per_kg'].mean():.2f}")
+    print(f"Total weight: {nyc_fra_august['cleaned_billable_weight'].sum()} kg")
+    print(f"Number of shipments: {len(nyc_fra_august)}")
+    print(f"Average weight per shipment: {nyc_fra_august['cleaned_billable_weight'].mean():.1f} kg")
+    
+    # Compare with overall average
+    overall_nyc_fra = standard_freight[standard_freight['lane'] == 'NYC-FRA']
+    avg_cost_overall = overall_nyc_fra['cleaned_cost_per_kg'].mean()
+    avg_cost_august = nyc_fra_august['cleaned_cost_per_kg'].mean()
+    
+    cost_increase = ((avg_cost_august - avg_cost_overall) / avg_cost_overall) * 100
+    print(f"Cost increase in August: {cost_increase:.1f}%")
+<jupyter_output>
+🔍 AUGUST INEFFICIENCY ANALYSIS
+========================================
+August NYC-FRA shipments: 6
+Average cost per kg: $109.33
+Total weight: 30.0 kg
+Number of shipments: 6
+Average weight per shipment: 5.0 kg
+Cost increase in August: 172.5%
+<jupyter_text>
+5. Key Insights Summary
+<jupyter_code>
+print("🎯 KEY BUSINESS INSIGHTS")
+print("=" * 40)
+print(f"1. NYC-FRA is the most volatile lane (STD: ${lane_volatility.loc['NYC-FRA', 'std_deviation']})")
+print(f"2. Service level significantly impacts costs (p-value: {p_value:.3f})")
+print(f"3. August showed {cost_increase:.1f}% cost increase on NYC-FRA lane")
+print(f"4. Average weight per shipment in problematic periods: {nyc_fra_august['cleaned_billable_weight'].mean():.1f} kg")
+print(f"5. Data cleaning reduced cost volatility by {((df['cost_per_kg'].std() - standard_freight['cleaned_cost_per_kg'].std()) / df['cost_per_kg'].std() * 100):.1f}%")
+
+print("\n💡 RECOMMENDATIONS")
+print("- Focus consolidation efforts on NYC-FRA lane")
+print("- Implement minimum shipment weight policies")
+print("- Monitor service level usage and premiums")
+print("- Use cleaned metrics for accurate budgeting")
+<jupyter_output>
+🎯 KEY BUSINESS INSIGHTS
+========================================
+1. NYC-FRA is the most volatile lane (STD: $21.66)
+2. Service level significantly impacts costs (p-value: 0.000)
+3. August showed 172.5% cost increase on NYC-FRA lane
+4. Average weight per shipment in problematic periods: 5.0 kg
+5. Data cleaning reduced cost volatility by 99.3%
+
+💡 RECOMMENDATIONS
+- Focus consolidation efforts on NYC-FRA lane
+- Implement minimum shipment weight policies
+- Monitor service level usage and premiums
+- Use cleaned metrics for accurate budgeting

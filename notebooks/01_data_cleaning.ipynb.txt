@@ -1,0 +1,140 @@
+<jupyter_text>
+Logistics Cost Analysis - Data Cleaning & PreparationThis notebook handles data extraction, cleaning, and preparation for the logistics cost intelligence project.
+<jupyter_code>
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+print("✅ Libraries imported successfully!")
+# Create sample data (in real scenario, this would be loaded from TMS database)
+data = {
+    'shipment_id': [f'SHP-{i:05d}' for i in range(1, 101)],
+    'ship_date': pd.date_range('2024-01-01', periods=100, freq='D'),
+    'lane': np.random.choice(['NYC-FRA', 'SHANGHAI-CHICAGO', 'LONDON-SINGAPORE'], 100),
+    'invoice_amount': np.random.normal(5000, 3000, 100).clip(100, 250000),
+    'billable_weight': np.random.normal(200, 150, 100).clip(1, 1000),
+    'service_level': np.random.choice(['Standard', 'Express', 'Priority'], 100, p=[0.7, 0.2, 0.1]),
+    'carrier': np.random.choice(['Carrier A', 'Carrier B', 'Carrier C'], 100)
+}
+
+# Add some realistic anomalies
+df = pd.DataFrame(data)
+df.loc[10, 'invoice_amount'] = 249000  # Special service fee
+df.loc[10, 'billable_weight'] = 1
+df.loc[10, 'service_level'] = 'Priority'
+
+df.loc[50:55, 'invoice_amount'] = np.random.normal(3000, 500, 6)  # August inefficiency
+df.loc[50:55, 'billable_weight'] = np.random.normal(5, 2, 6).clip(1, 10)
+df.loc[50:55, 'service_level'] = 'Express'
+df.loc[50:55, 'lane'] = 'NYC-FRA'
+
+print("📊 Dataset created successfully!")
+print(f"Shape: {df.shape}")
+df.head()
+<jupyter_output>
+📊 Dataset created successfully!
+Shape: (100, 7)
+<jupyter_text>
+Data Quality Assessment
+<jupyter_code>
+print("🔍 Data Quality Check:")
+print(f"Total records: {len(df)}")
+print(f"Date range: {df['ship_date'].min()} to {df['ship_date'].max()}")
+print("\nMissing values:")
+print(df.isnull().sum())
+print("\nBasic statistics:")
+df[['invoice_amount', 'billable_weight']].describe()
+# Calculate cost per kg
+df['cost_per_kg'] = df['invoice_amount'] / df['billable_weight']
+
+print("📈 Cost per kg statistics:")
+print(df['cost_per_kg'].describe())
+
+# Identify outliers (costs > $1000/kg)
+high_cost_threshold = 1000
+df['needs_review'] = df['cost_per_kg'] > high_cost_threshold
+
+print(f"\n🚨 Records needing review (cost > ${high_cost_threshold}/kg): {df['needs_review'].sum()}")
+<jupyter_output>
+📈 Cost per kg statistics:
+count      100.000000
+mean       288.129203
+std       2343.883771
+min          3.333333
+25%         18.750000
+50%         27.027027
+75%         47.368421
+max      24900.000000
+Name: cost_per_kg, dtype: float64
+
+🚨 Records needing review (cost > $1000/kg): 1
+<jupyter_text>
+Handle Data Anomalies
+<jupyter_code>
+# Create cleaned weight column (0 for service fees, actual weight for freight)
+df['cleaned_billable_weight'] = np.where(
+    df['needs_review'], 
+    0,  # Set weight to 0 for service fees/anomalies
+    df['billable_weight']  # Keep original weight for normal freight
+)
+
+# Categorize charge types
+def categorize_charge_type(row):
+    if row['needs_review']:
+        return 'Fixed Fee Service'
+    elif row['billable_weight'] < 10 and row['invoice_amount'] > 1000:
+        return 'Minimum Charge'
+    else:
+        return 'Standard Freight'
+
+df['charge_type'] = df.apply(categorize_charge_type, axis=1)
+
+print("✅ Data cleaning completed!")
+print("\nCharge Type Distribution:")
+print(df['charge_type'].value_counts())
+# Calculate cleaned cost per kg (only for Standard Freight)
+standard_freight = df[df['charge_type'] == 'Standard Freight'].copy()
+standard_freight['cleaned_cost_per_kg'] = (
+    standard_freight['invoice_amount'] / standard_freight['cleaned_billable_weight']
+)
+
+print("📊 Cleaned Data Statistics:")
+print(f"Standard freight records: {len(standard_freight)}")
+print(f"Cleaned cost per kg - Mean: ${standard_freight['cleaned_cost_per_kg'].mean():.2f}")
+print(f"Cleaned cost per kg - Std: ${standard_freight['cleaned_cost_per_kg'].std():.2f}")
+<jupyter_output>
+📊 Cleaned Data Statistics:
+Standard freight records: 93
+Cleaned cost per kg - Mean: $28.88
+Cleaned cost per kg - Std: $16.93
+<jupyter_text>
+Save Cleaned Data
+<jupyter_code>
+# Save processed data
+df.to_csv('../data/processed/cleaned_logistics_data.csv', index=False)
+standard_freight.to_csv('../data/processed/standard_freight_data.csv', index=False)
+
+print("💾 Data saved successfully!")
+print("📁 Files created:")
+print("- ../data/processed/cleaned_logistics_data.csv")
+print("- ../data/processed/standard_freight_data.csv")
+<jupyter_output>
+💾 Data saved successfully!
+📁 Files created:
+- ../data/processed/cleaned_logistics_data.csv
+- ../data/processed/standard_freight_data.csv
+<jupyter_text>
+Summary
+<jupyter_code>
+print("🎯 DATA CLEANING SUMMARY")
+print("=" * 50)
+print(f"Original records: {len(df)}")
+print(f"Records needing review: {df['needs_review'].sum()}")
+print(f"Standard freight records: {len(standard_freight)}")
+print(f"Fixed fee service records: {len(df[df['charge_type'] == 'Fixed Fee Service'])}")
+print(f"Minimum charge records: {len(df[df['charge_type'] == 'Minimum Charge'])}")
+print(f"\nCleaned cost per kg range: ${standard_freight['cleaned_cost_per_kg'].min():.2f} - ${standard_freight['cleaned_cost_per_kg'].max():.2f}")
+print(f"Data volatility reduced by: {((df['cost_per_kg'].std() - standard_freight['cleaned_cost_per_kg'].std()) / df['cost_per_kg'].std() * 100):.1f}%")

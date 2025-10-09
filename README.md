@@ -50,8 +50,11 @@ logistics-cost-intelligence/
 - **Tools:** Git, Jupyter Notebook, Excel
 
 ## 🏃‍♂️ Quick Start
-1. Install requirements: `pip install -r requirements.txt`
-2. Run the analysis notebooks in order (01-04)
+1.Clone this repository:
+   ```bash
+   git clone https://github.com/yourusername/logistics-cost-intelligence.git
+2. Install requirements: `pip install -r requirements.txt`
+3. Run the analysis notebooks in order (01-04)
 
 ## 👤 Author
 **Mmesoma Eboh**
