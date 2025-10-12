@@ -184,6 +184,7 @@ Financial Analysis Stack:
 - **Predictive Forecasting**: Driver-based budget model improving accuracy by 25%+
 - **ROI Analysis**: Quantified $200K+ savings opportunity with implementation roadmap
 
+<<<<<<< HEAD
 ### Financial Analysis Deliverables
 
 #### Completed Financial Analysis
@@ -287,3 +288,16 @@ This project demonstrates my ability to:
 > "Modern finance requires both traditional acumen and advanced analytics to drive strategic business impact."
 
 ***Transforming financial operations through data-driven optimization — $200K+ at a time.***
+=======
+## 🏃‍♂️ Quick Start
+1.Clone this repository:
+   ```bash
+   git clone https://github.com/mmesoma-eboh/logistics-cost-intelligence.git
+2. Install requirements: `pip install -r requirements.txt`
+3. Run the analysis notebooks in order (01-04)
+
+## 👤 Author
+**Mmesoma Eboh**
+- LinkedIn: [Mmesoma Eboh](www.linkedin.com/in/mmesoma-eboh)
+- Email: mmesoma.eboh@yahoo.com
+>>>>>>> bc787b0e020932fe7de5253bdf91eb28139af78e
