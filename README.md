@@ -287,4 +287,8 @@ This project demonstrates my ability to:
 > "Modern finance requires both traditional acumen and advanced analytics to drive strategic business impact."
 
 ***Transforming financial operations through data-driven optimization — $200K+ at a time.***
+<<<<<<< HEAD
 =======
+=======
+=======
+>>>>>>> 0f2322a5b1980eebc8b11f9f31dfbb6d9722b0d4
