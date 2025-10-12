@@ -66,7 +66,7 @@ logistics-cost-intelligence/
 git clone https://github.com/mmesoma-eboh/logistics-cost-intelligence.git
 cd logistics-cost-intelligence
 pip install -r requirements.txt
-
+```
 ### 2. Run Complete Analysis
 #### Execute the full financial analysis pipeline
 python scripts/01_data_cleaning.py
