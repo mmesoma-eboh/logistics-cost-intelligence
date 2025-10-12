@@ -1,0 +1,8 @@
+feature,importance_score
+service_level_encoded,0.254
+monthly_avg_cost,0.198
+lane_encoded,0.167
+cleaned_billable_weight,0.145
+volatility_ratio,0.123
+carrier_encoded,0.087
+is_nyc_fra_small,0.026

@@ -1,0 +1,11 @@
+shipment_id,ship_date,lane,invoice_amount,billable_weight,service_level,carrier,cost_per_kg,needs_review,cleaned_billable_weight,charge_type,cleaned_cost_per_kg
+SHP-00001,2024-01-01,NYC-FRA,3875,150.5,Standard,Carrier A,25.75,False,150.5,Standard Freight,25.75
+SHP-00002,2024-01-02,SHANGHAI-CHICAGO,1690,89.2,Standard,Carrier B,18.95,False,89.2,Standard Freight,18.95
+SHP-00003,2024-01-03,LONDON-SINGAPORE,4730,210.8,Express,Carrier C,22.45,False,210.8,Standard Freight,22.45
+SHP-00004,2024-01-04,NYC-FRA,1910,45.3,Standard,Carrier A,42.15,False,45.3,Standard Freight,42.15
+SHP-00005,2024-01-05,SHANGHAI-CHICAGO,3110,156.7,Standard,Carrier B,19.85,False,156.7,Standard Freight,19.85
+SHP-00006,2024-01-06,LONDON-SINGAPORE,2285,78.9,Priority,Carrier C,28.95,False,78.9,Standard Freight,28.95
+SHP-00007,2024-01-07,NYC-FRA,1400,12.8,Express,Carrier A,109.33,False,12.8,Standard Freight,109.33
+SHP-00008,2024-01-08,SHANGHAI-CHICAGO,3500,198.4,Standard,Carrier B,17.65,False,198.4,Standard Freight,17.65
+SHP-00009,2024-01-09,LONDON-SINGAPORE,3535,167.2,Standard,Carrier C,21.15,False,167.2,Standard Freight,21.15
+SHP-00010,2024-01-10,NYC-FRA,1300,8.5,Express,Carrier A,152.94,False,8.5,Standard Freight,152.94
