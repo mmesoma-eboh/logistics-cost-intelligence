@@ -282,9 +282,8 @@ This project demonstrates my ability to:
 
 **Let's discuss how I can deliver similar results for your organization:**
 
-- (LinkedIn)[www.linkedin.com/in/mmesoma-eboh]
-- (Email)[mmesoma_eboh@yahoo.com]
-
+- [LinkedIn](https://www.linkedin.com/in/mmesoma-eboh)  
+- [Email](mailto:mmesoma_eboh@yahoo.com)
 > "Modern finance requires both traditional acumen and advanced analytics to drive strategic business impact."
 
 ***Transforming financial operations through data-driven optimization — $200K+ at a time.***
