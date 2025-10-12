@@ -1,11 +1,6 @@
 metric,value,description
-total_annual_opportunity,225000,"Total identified annual savings opportunity"
-forecasting_savings,75000,"Savings from improved forecasting accuracy"
-nyc_fra_savings,75000,"Savings from NYC-FRA lane consolidation"
-service_level_savings,50000,"Savings from service level optimization"
-volatility_savings,25000,"Savings from cost volatility reduction"
-achieved_accuracy,98.3,"Model forecasting accuracy percentage"
-confidence_level,"HIGH","Business confidence in results"
-implementation_timeline,"12-18 months","Recommended implementation timeline"
-roi_multiplier,"3-5x","Expected return on investment"
-data_quality_score,99.3,"Data quality improvement percentage"
+total_annual_opportunity,225000,Total identified annual savings opportunity
+forecasting_savings,75000,Savings from improved forecasting accuracy
+nyc_fra_savings,75000,Savings from NYC-FRA lane consolidation
+achieved_accuracy,98.3,Model forecasting accuracy percentage
+confidence_level,HIGH,Business confidence in results
