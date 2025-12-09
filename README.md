@@ -83,15 +83,6 @@ print(f"Total Opportunity: ${business_case['total_annual_opportunity']:,.0f}")
 
 # Financial Impact & Business Strategy
 
-## P&L Improvement Roadmap
-
-| Strategic Initiative | Financial Impact | Timeline | Key Metric |
-|---------------------|------------------|----------|------------|
-| NYC-FRA Consolidation | $75,000 annual savings | 3-6 months | 60% cost reduction |
-| Forecasting Accuracy | $50,000 variance reduction | FY2026 Budget | 25% improvement |
-| Service Level Optimization | $50,000 cost avoidance | 6-12 months | 85% premium rationalization |
-| Volatility Management | $25,000 risk mitigation | Ongoing | 15% reduction |
-
 ## Strategic Business Impact
 
 - **Budget Accuracy**: 25%+ improvement in logistics cost forecasting
@@ -151,22 +142,11 @@ Financial Analysis Stack:
 - scikit-learn - Predictive modeling for budget forecasting
 - matplotlib/seaborn - Executive financial reporting and visualization
 
-
 ### Financial Modeling Applications
 - **Variance Analysis**: Automated identification of $249K service fee anomalies
 - **Cost Segmentation**: Two-Stream financial model separating predictable vs volatile costs
 - **Predictive Forecasting**: Driver-based budget model improving accuracy by 25%+
 - **ROI Analysis**: Quantified $200K+ savings opportunity with implementation roadmap
-
-
-### Financial Analysis Deliverables
-
-#### Completed Financial Analysis
-- Cost Segmentation Framework - Two-Stream model separating predictable vs volatile costs
-- Variance Analysis - 60% NYC-FRA savings opportunity identified
-- Driver-Based Forecasting - 25%+ budget accuracy improvement
-- ROI Business Case - $200K+ opportunity quantified and validated
-- Implementation Roadmap - Phased execution plan with clear milestones
 
 ### Technical Skills Applied to Business Problems
 
